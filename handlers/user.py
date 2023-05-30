@@ -99,50 +99,19 @@ async def get_email(message: types.Message, state: FSMContext) -> None:
     if check == True:
         async with state.proxy() as data:
             data['email'] = message.text
-        await message.answer('Ваши данные сохранены', reply_markup=kb_user.cancle_keyboard())
         async with state.proxy() as data:
             await bot.send_message(chat_id=message.from_user.id,
                                 text=f"ФИО: {data['fio']}\nТелефон: {data['telephone']}\nДата рождения: {data['date_of_birthday']}\nУчебное учреждение: {data['education']}\nСпециальность: {data['profession']}\nЭл. почта: {data['email']}")
-        await ClientStates.next()  
+        await state.finish()  
     else:
         await message.reply('Неверный ввод.\n<b>Формат: practice@gmail.com</b>', reply_markup=kb_user.cancle_keyboard(), parse_mode='HTML')
+    await message.answer('Ваши данные сохранены', reply_markup=kb_user.choose_keyboard())
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# async def choose_events(message: types.Message):
-#     await message.reply(text="Выберите мероприятие", 
-#                         reply_markup=kb_user.event_keyboard())
-#     await ClientStates.event.set()
-
-# async def events(message: types.Message, state: FSMContext) -> None:
-#     async with state.proxy() as data:
-#         data['event'] = message.text
-#     await state.finish()
-#     await message.reply(f"Вы успешно зарегистрированы на мероприятие: {data['event']}", reply_markup=kb_user.cancle_keyboard())
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-# @dp.message_handler(lambda message: not message.photo, state=VolunteerStates.student_ID_card)
-# async def check_photo_studV(message: types.Message):
-#     return await message.reply('Это не фотография!')
-
-# @dp.message_handler(lambda message: message.photo, content_types=['photo'], state=VolunteerStates.photo)
-# async def get_photoV(message: types.Message, state: FSMContext) -> None:
-#     async with state.proxy() as data:
-#         data['photo'] = message.photo[0].file_id
-#     await message.answer('Ваши данные сохранены')
-
-#     async with state.proxy() as data:
-#         await bot.send_photo(chat_id=message.from_user.id,
-#                             photo=data['photo'],
-#                             caption=f"ФИО: {data['fio']}\nТелефон: {data['telephone']}\nДата рождения: {data['date_of_birthday']}\nУчебное учреждение: {data['education']}\nСпециальность: {data['profession']}\nЭл. почта: {data['email']}")
-
-#     state.finish()
 
 def register_handlers_user(dp: dispatcher):
     dp.register_message_handler(start_registration, commands=["start"])
     dp.register_message_handler(choose, Text(equals='Регистрация'))
     dp.register_message_handler(cancle, Text(equals='Вернуться обратно'), state='*')
-    # dp.register_message_handler(choose_events, Text(equals='Зарегистрироваться на мероприятии'))
-    # dp.register_message_handler(events, Text(['Интенсив ПРАКТИС', 'КОД ИБ + ПРАКТИС', 'Ярмарка стартапов']), state=ClientStates.event)
     dp.register_message_handler(event, Text(equals='Мероприятия'))
     dp.register_message_handler(get_event, Text(['Интенсив ПРАКТИС', 'КОД ИБ + ПРАКТИС']))
     dp.register_message_handler(get_fio, state=ClientStates.fio)
@@ -151,12 +120,3 @@ def register_handlers_user(dp: dispatcher):
     dp.register_message_handler(get_education, state=ClientStates.education)
     dp.register_message_handler(get_profession, state=ClientStates.profession)
     dp.register_message_handler(get_email, state=ClientStates.email)
-        # dp.register_message_handler(check_photo, lambda message: not message.photo, state=ClientStates.photo)
-        # dp.register_message_handler(get_photo, lambda message: message.photo, content_types=['photo'], state=ClientStates.photo)
-        # dp.register_message_handler(check_photo_cap, lambda message: not message.photo, state=ClientStates.photo_cap)
-        # dp.register_message_handler(get_photo_cap, lambda message: message.photo, content_types=['photo'], state=ClientStates.photo_cap)
-        # dp.register_message_handler(check_photo_stud, lambda message: not message.photo, state=ClientStates.student_ID_card)
-        # dp.register_message_handler(get_student_ID_card, lambda message: message.photo, content_types=['photo'], state=ClientStates.student_ID_card)
-
-    
-
