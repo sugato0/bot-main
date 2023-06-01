@@ -4,8 +4,10 @@ from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from keyboards import kb_user
+from aiogram.types import CallbackQuery
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 from lib import handler
+import emoji
 import re 
 
 START_TEXT = """
@@ -108,6 +110,20 @@ async def get_email(message: types.Message, state: FSMContext) -> None:
     await message.answer('Ваши данные сохранены', reply_markup=kb_user.choose_keyboard())
 
 
+async def want_to_practice(message: types.Message) -> None:
+    await message.reply(text='Выберите кнопку', reply_markup=kb_user.want_to_team())
+
+async def alexander(message: types.Message) -> None:
+    await bot.send_photo(chat_id=message.from_user.id, 
+                        photo='https://i.imgur.com/oC9qlF0.jpeg',
+                        caption="Чтобы попасть в команду, напишите Александру Трошкину", 
+                        reply_markup=kb_user.link())    
+    await bot.send_message(chat_id=message.from_user.id, text=emoji.emojize("👆"), reply_markup=kb_user.choose_keyboard())
+
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id)
+
 def register_handlers_user(dp: dispatcher):
     dp.register_message_handler(start_registration, commands=["start"])
     dp.register_message_handler(choose, Text(equals='Регистрация'))
@@ -120,3 +136,6 @@ def register_handlers_user(dp: dispatcher):
     dp.register_message_handler(get_education, state=ClientStates.education)
     dp.register_message_handler(get_profession, state=ClientStates.profession)
     dp.register_message_handler(get_email, state=ClientStates.email)
+    dp.register_message_handler(want_to_practice, Text(equals='Что такое PRACTICE?'))
+    dp.register_message_handler(alexander, Text(equals='Хочу в команду'))
+    dp.register_callback_query_handler(lambda c: c.data == 'link')
