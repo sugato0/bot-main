@@ -1,8 +1,17 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 
+
+
+
+
+
+
 def get_keyboard() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
-    kb.add(KeyboardButton('Регистрация'))
+    kb.add(KeyboardButton('Любимые формы'))
+    kb.add(KeyboardButton('Мои проекты'))
+    kb.add(KeyboardButton('Новый проект'))
+    kb.add(KeyboardButton('Прикрутить домен'))
     return kb
 
 def choose_keyboard() -> ReplyKeyboardMarkup:

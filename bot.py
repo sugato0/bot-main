@@ -3,8 +3,7 @@ from create_bot import dp
 
 async def on_startup(_):
     print('Start')
-
-from handlers import user, admin, other
+from handlers import user
 
 user.register_handlers_user(dp)
 # admin.register_handlers_admin(dp)
